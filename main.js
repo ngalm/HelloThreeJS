@@ -1,5 +1,6 @@
 import * as THREE from 'three';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+import { FirstPersonControls } from 'three/addons/controls/FirstPersonControls.js';
 
 // set up loader, renderer, scene, and camera
 const loader = new GLTFLoader();
@@ -11,6 +12,12 @@ camera.position.set(2, 4, 10); // pov: straight on like person walking on path
 const renderer = new THREE.WebGLRenderer();
 renderer.setSize( window.innerWidth, window.innerHeight );
 document.body.appendChild( renderer.domElement );
+
+//First person camera controls
+const clock = new THREE.Clock();  // set up a clock to track changes in keyboard/mouse input
+const controls = new FirstPersonControls(camera, renderer.domElement);
+controls.movementSpeed = 2;
+controls.lookSpeed = .1;    //sensitivity of cursor
 
 // load landscape model
 loader.load( './assets/helloWorld.glb', function ( gltf ) {
@@ -42,6 +49,8 @@ scene.add(ambient);
 
 // animate scene
 function animate() {
+  const delta = clock.getDelta(); // time since last frame
+  controls.update(delta);         // process keyboard/mouse movement
   renderer.render( scene, camera );
 }
 renderer.setAnimationLoop( animate );
