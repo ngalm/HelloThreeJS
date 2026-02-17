@@ -1,7 +1,5 @@
 import * as THREE from 'three';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
-import { FirstPersonControls } from 'three/addons/controls/FirstPersonControls.js';
-
 import { PointerLockControls } from 'three/addons/controls/PointerLockControls.js';
 
 
@@ -16,7 +14,10 @@ document.body.appendChild( renderer.domElement );
 
 // Pointer Lock camera control
 const controls = new PointerLockControls( camera, document.body );
-// LOOK AT DOCUMENTATION EX COED
+document.body.addEventListener('click', () => controls.lock());     // click to enable movement
+const keys = {}
+document.addEventListener('keydown', e => keys[e.code] = true);     // if a key is pressed it's flagged 'true' in keys object
+document.addEventListener('keyup', e => keys[e.code] = false);      // 
 
 // load landscape model
 loader.load( './assets/helloWorld.glb', function ( gltf ) {
@@ -43,6 +44,13 @@ scene.add(ambient);
 
 // animate scene
 function animate() {
+  // move camera along xz-axis if controls are locked and a WASD key is pressed
+  if (controls.isLocked) {
+    if (keys['KeyW']) controls.moveForward(.1);
+    if (keys['KeyS']) controls.moveForward(-.1);
+    if (keys['KeyA']) controls.moveRight(-.1);
+    if (keys['KeyD']) controls.moveRight(.1);
+  }
   renderer.render( scene, camera );
 }
 renderer.setAnimationLoop( animate );
