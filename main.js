@@ -14,7 +14,24 @@ document.body.appendChild( renderer.domElement );
 
 // Pointer Lock camera control
 const controls = new PointerLockControls( camera, document.body );
-document.body.addEventListener('click', () => controls.lock());     // click to enable movement
+
+const blocker = document.getElementById( 'blocker' );
+const instructions = document.getElementById( 'instructions' );
+
+instructions.addEventListener( 'click', function () {
+  controls.lock();                      // when user clicks inside 'instructions' html element, pointer is locked (camera controls are active)
+} );
+
+controls.addEventListener( 'lock', function () {
+  instructions.style.display = 'none';   // don't display instructions menu or block overlay when pointer is locked (controls are active)
+  blocker.style.display = 'none';
+} );
+
+controls.addEventListener( 'unlock', function () {
+  blocker.style.display = 'block';       // display instructions menu and block overlay when pointer is unlocked (controls deactivated)
+  instructions.style.display = '';
+} );
+
 const keys = {}
 document.addEventListener('keydown', e => keys[e.code] = true);     // if a key is pressed it's flagged 'true' in keys object
 document.addEventListener('keyup', e => keys[e.code] = false);      // 
